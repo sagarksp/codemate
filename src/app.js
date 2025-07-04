@@ -3,10 +3,13 @@ const connectDB = require("./config/database");
 const User = require("../src/models/user")
 const bcrypt = require("bcrypt");
 const signupValidation = require("../src/validation/signupvalidation")
+const jwt = require("jsonwebtoken");
+const cookies = require("cookie-parser")
+const {userAuth} = require("../src/middlewares/auth")
 
  
 const app = express();
-
+app.use(cookies())
 app.use(express.json())
 
 app.post("/signup",async (req,res)=>{
@@ -128,6 +131,33 @@ app.patch("/user", async (req,res)=>{
     }
 })
 
+//profile api
+
+app.get("/profile",userAuth, async(req,res)=>{
+
+    try{
+         const user = req.user
+
+   res.send(user)
+    
+    }catch(err){
+        res.status(501).send("something went wrong")
+    }
+   
+})
+
+app.post("/sendConnection",userAuth, async (req,res)=>{
+
+    try{
+        const user = req.user;
+        res.send(user.firstName + "sent request ")
+    }catch(err){
+         res.status(501).send("something went wrong")
+    }
+   
+})
+
+
 //login api
 app.post("/login", async (req,res)=>{
     try{
@@ -142,11 +172,19 @@ app.post("/login", async (req,res)=>{
         const checkPassword = await bcrypt.compare(password, user.password)
 
         if(checkPassword){
+            const token = await jwt.sign({_id:user._id},"DEV", {expiresIn:"1d"});
+            res.cookie("token",token, {
+                expires:new Date(Date.now() + 8 + 3600000)
+            });
             res.send("Login Sucessfully")
         }
-        else{
-            throw new Error("Invalid Credentials")
-        }
+
+        // if(checkPassword){
+        //     res.send("Login Sucessfully")
+        // }
+        // else{
+        //     throw new Error("Invalid Credentials")
+        // }
 
     }catch(err){
         res.status(500).send("sopmething wrong during login " + err)
