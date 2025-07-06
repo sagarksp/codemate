@@ -179,13 +179,6 @@ app.post("/login", async (req,res)=>{
             res.send("Login Sucessfully")
         }
 
-        // if(checkPassword){
-        //     res.send("Login Sucessfully")
-        // }
-        // else{
-        //     throw new Error("Invalid Credentials")
-        // }
-
     }catch(err){
         res.status(500).send("sopmething wrong during login " + err)
     }
