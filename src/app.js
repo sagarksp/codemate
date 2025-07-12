@@ -181,7 +181,7 @@ app.post("/login", async (req,res)=>{
             res.cookie("token",token, {
                 expires:new Date(Date.now() + 8 + 3600000)
             });
-            // res.status(200).send("Login Sucessfully")
+            // res.status(200).send("Login Sucessfully"
             // Express example
 res.send(user);
 
