@@ -6,11 +6,16 @@ const signupValidation = require("../src/validation/signupvalidation")
 const jwt = require("jsonwebtoken");
 const cookies = require("cookie-parser")
 const {userAuth} = require("../src/middlewares/auth")
+const cors = require("cors")
 
  
 const app = express();
 app.use(cookies())
 app.use(express.json())
+app.use(cors({
+  origin: "http://localhost:5173", // frontend
+  credentials: true // if using cookies
+}));
 
 app.post("/signup",async (req,res)=>{
 
@@ -176,7 +181,10 @@ app.post("/login", async (req,res)=>{
             res.cookie("token",token, {
                 expires:new Date(Date.now() + 8 + 3600000)
             });
-            res.send("Login Sucessfully")
+            // res.status(200).send("Login Sucessfully")
+            // Express example
+res.send(user);
+
         }
 
     }catch(err){
