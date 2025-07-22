@@ -183,13 +183,33 @@ app.post("/login", async (req,res)=>{
             });
             // res.status(200).send("Login Sucessfully"
             // Express example
-res.send(user);
+res.status(200).send(user);
 
         }
 
     }catch(err){
         res.status(500).send("sopmething wrong during login " + err)
     }
+})
+
+//cookies vrification api 
+app.get("/verify",async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.sendStatus(401); // Not logged in
+
+  try {
+    const user = jwt.verify(token, "DEV");
+    res.status(200).json(user); // Or user info
+  } catch (err) {
+    res.sendStatus(401);
+  }
+});
+
+
+app.post("/logout", async(req,res)=>{
+    res.cookie("token",null, {
+      expires: new Date(Date.now())
+    }).send("user logout sucessfully ")
 })
 
 connectDB().then(()=>{
