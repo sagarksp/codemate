@@ -205,7 +205,7 @@ app.get("/verify",async (req, res) => {
   }
 });
 
-
+//logout
 app.post("/logout", async(req,res)=>{
     res.cookie("token",null, {
       expires: new Date(Date.now())
